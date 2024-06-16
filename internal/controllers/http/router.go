@@ -22,7 +22,7 @@ func NewRouter(handler *gin.Engine,
 
 	h2 := handler.Group("/")
 	{
-		newUserRoutes(h2, log)
+		newUserRoutes(h2, user, log)
 	}
 	h2.Use(Authorize(log, appSecret, parser))
 }
