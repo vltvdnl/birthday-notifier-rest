@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"notifier/internal/config"
-	"notifier/pkg/log"
+	"log"
+
+	"github.com/vltvdnl/birthday-notifier-rest/internal/config"
 )
 
 func main() {

@@ -26,5 +26,3 @@ func New(url string) (*Storage, error) {
 
 	return &Storage{db}, nil
 }
-
-//TODO: methods to search and others things....
