@@ -1,6 +1,9 @@
 package httpserver
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 type Server struct {
 	server *http.Server
@@ -29,4 +32,12 @@ func (s *Server) start() {
 
 func (s *Server) Notify() <-chan error {
 	return s.notify
+}
+
+// Shutdown -.
+func (s *Server) Shutdown() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10)
+	defer cancel()
+
+	return s.server.Shutdown(ctx)
 }

@@ -1,0 +1,3 @@
+DROP TABLE users CASCADE;
+DROP TABLE IF EXISTS users_subsciptions;
+DROP INDEX IF EXISTS idx_userid;

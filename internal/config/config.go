@@ -25,8 +25,8 @@ type ClientsConfig struct {
 
 type Config struct {
 	Env           string `yaml:"env" env-default:"local"`
-	StoragePath   string `yaml:"storage_path" env-required:"true"`
-	AppSecret string `yaml:"storage_path"`
+	Storage_Url   string `yaml:"postgres_con" env-required:"true"`
+	AppSecret     string `yaml:"app_secret"`
 	HTTPServer    `yaml:"http_server"`
 	ClientsConfig `yaml:"clients"`
 }

@@ -16,11 +16,12 @@ import (
 )
 
 type Client struct {
-	api ssov1.AuthClient
-	log *slog.Logger
+	app_id int
+	api    ssov1.AuthClient
+	log    *slog.Logger
 }
 
-func New(ctx context.Context, log *slog.Logger, addr string, timeout time.Duration, retriesCount int) (*Client, error) {
+func New(ctx context.Context, log *slog.Logger, addr string, app_id int, timeout time.Duration, retriesCount int) (*Client, error) {
 	const log_op = "grpc.New"
 
 	retryOpts := []grpcretry.CallOption{
@@ -45,8 +46,9 @@ func New(ctx context.Context, log *slog.Logger, addr string, timeout time.Durati
 	grpcClient := ssov1.NewAuthClient(con)
 
 	return &Client{
-		api: grpcClient,
-		log: log,
+		app_id: app_id,
+		api:    grpcClient,
+		log:    log,
 	}, nil
 }
 
@@ -67,9 +69,9 @@ func (c *Client) Register(ctx context.Context, user models.User, password string
 	}
 	return resp.GetUserId(), nil
 }
-func (c *Client) Login(ctx context.Context, app_id int, email string, password string) (token string, err error) {
+func (c *Client) Login(ctx context.Context, email string, password string) (token string, err error) {
 	const log_op = "grpc.Login"
-	resp, err := c.api.Login(ctx, &ssov1.LoginRequest{AppId: int32(app_id), Email: email, Password: password})
+	resp, err := c.api.Login(ctx, &ssov1.LoginRequest{AppId: int32(c.app_id), Email: email, Password: password})
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", log_op, err)
 	}

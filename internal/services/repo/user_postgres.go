@@ -4,13 +4,22 @@ import (
 	"context"
 	"log/slog"
 
+	"github.com/lib/pq"
 	"github.com/vltvdnl/birthday-notifier-rest/internal/domain/models"
 	"github.com/vltvdnl/birthday-notifier-rest/pkg/storage"
+)
+
+var (
+	ErrUniqueViolation = "23505"
 )
 
 type UserRepo struct {
 	log *slog.Logger
 	s   storage.Storage
+}
+
+func New(log *slog.Logger, s storage.Storage) *UserRepo {
+	return &UserRepo{log: log, s: s}
 }
 
 func (r *UserRepo) GetUser(ctx context.Context, user_id int64) (*models.User, error) {
@@ -32,6 +41,10 @@ func (r *UserRepo) SaveUser(ctx context.Context, user models.User) error {
 	sqlstatement := `INSERT INTO users(id, first_name, last_name, email, birthdate) VALUES ($1, $2, $3, $4, $5)`
 	_, err := r.s.ExecContext(ctx, sqlstatement, user.ID, user.First_name, user.Last_name, user.Email, user.Birthdate)
 	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code.Name() == ErrUniqueViolation {
+			r.log.Info("user already registered")
+			return nil
+		}
 		r.log.Error("can't save user to db ", err)
 		return err
 	}
@@ -81,7 +94,4 @@ func (r *UserRepo) Subscribe(ctx context.Context, follower_id int64, user int64)
 }
 func (r *UserRepo) Unsubscribe(ctx context.Context, follower_id int64, user int64) error {
 	panic("not impemented")
-}
-func (r *UserRepo) Subscriptions(ctx context.Context, user_id int64) (*[]models.User, error) {
-	panic("not implemented")
 }

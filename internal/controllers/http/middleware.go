@@ -10,7 +10,7 @@ import (
 )
 
 type JWTParser interface {
-	Parse(tokenString string, appSecret string) (uid int64, email string, err error)
+	Parse(tokenString string) (uid int64, email string, err error)
 }
 
 var (
@@ -28,7 +28,6 @@ func extractToken(c *gin.Context) string {
 
 // TODO: can be some bugs
 func Authorize(log *slog.Logger,
-	appSecret string,
 	parser JWTParser) gin.HandlerFunc {
 	const log_op = "middleware.auth.New"
 
@@ -38,10 +37,10 @@ func Authorize(log *slog.Logger,
 		tokenStr := extractToken(c)
 		if tokenStr == "" {
 			log.Info("no token in reques")
-			c.Next()
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "No authorization"})
 			return
 		}
-		uid, email, err := parser.Parse(tokenStr, appSecret)
+		uid, email, err := parser.Parse(tokenStr)
 		if err != nil {
 			log.Warn("failed to parse token", err)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "No authorization"}) // TODO

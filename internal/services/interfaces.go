@@ -11,9 +11,9 @@ type UserRepo interface {
 	SaveUser(ctx context.Context, user models.User) error
 	NotificationChange(ctx context.Context, user_id int64) error
 	AllUsers(ctx context.Context) (*[]models.User, error)
-	Subscribe(ctx context.Context, user models.User, id int64) error
-	Unsubscribe(ctx context.Context, user models.User, id int64) error
-	Subscriptions(ctx context.Context, user models.User) (*[]models.User, error)
+	Subscribe(ctx context.Context, user int64, id int64) error
+	Unsubscribe(ctx context.Context, user int64, id int64) error
+	// Subscriptions(ctx context.Context, user models.User) (*[]models.User, error)
 }
 type UserUsecase interface {
 	UserAuth
