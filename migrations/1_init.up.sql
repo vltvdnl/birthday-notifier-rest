@@ -8,10 +8,10 @@ CREATE TABLE IF NOT EXISTS users
     want_notifications boolean NOT NULL DEFAULT true
 );
 
-CREATE TABLE IF NOT EXISTS users_subsciptions
-(  
-    follower_id integer PRIMARY KEY REFERENCES users(id),
+CREATE TABLE IF NOT EXISTS users_subscriptions
+(   id serial PRIMARY KEY,
+    follower_id integer REFERENCES users(id),
     user_id integer REFERENCES users(id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_userid ON users_subsciptions(user_id);
+CREATE INDEX IF NOT EXISTS idx_userid ON users_subscriptions(user_id);

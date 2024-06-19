@@ -19,6 +19,8 @@ import (
 	"github.com/vltvdnl/birthday-notifier-rest/pkg/storage"
 )
 
+const App_ID = 1
+
 func main() {
 	cfg := config.MustLoad()
 	log := log.New(cfg.Env)
@@ -29,7 +31,7 @@ func main() {
 	if err != nil {
 		panic("storage didnt inited")
 	}
-	auth, err := grpc.New(context.Background(), log, cfg.SSO.Address, 1, cfg.SSO.Timeout, cfg.SSO.RetriesCount)
+	auth, err := grpc.New(context.Background(), log, cfg.SSO.Address, App_ID, cfg.SSO.Timeout, cfg.SSO.RetriesCount)
 	if err != nil {
 		panic("sso isn't inited")
 	}

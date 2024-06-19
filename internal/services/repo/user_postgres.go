@@ -90,8 +90,26 @@ func (r *UserRepo) AllUsers(ctx context.Context) (*[]models.User, error) {
 
 }
 func (r *UserRepo) Subscribe(ctx context.Context, follower_id int64, user int64) error {
-	panic("not impelented")
+	// panic("not impelented")
+	sqlstatement := `INSERT INTO users_subscriptions(follower_id, user_id) VALUES ($1, $2)`
+	_, err := r.s.ExecContext(ctx, sqlstatement, follower_id, user)
+	if err != nil {
+		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code.Name() == ErrUniqueViolation {
+			r.log.Info("user already subscribed")
+			return nil
+		}
+		r.log.Error("can't insert row to db: %w", err)
+		return err
+	}
+	return nil
 }
 func (r *UserRepo) Unsubscribe(ctx context.Context, follower_id int64, user int64) error {
-	panic("not impemented")
+	// panic("not impemented")
+	sqlstatement := `DELETE FROM users_subscriptions WHERE follower_id = $1 AND user_id = $2`
+	_, err := r.s.ExecContext(ctx, sqlstatement, follower_id, user)
+	if err != nil {
+		r.log.Error("can't delete row: %w", err)
+		return err
+	}
+	return nil
 }

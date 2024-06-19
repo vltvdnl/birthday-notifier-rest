@@ -70,9 +70,18 @@ func (u *UserService) GetAllUsers(ctx context.Context) (*[]models.User, error) {
 	return users, err
 }
 func (u *UserService) Subscribe(ctx context.Context, follower int64, user int64) error {
-	panic("not implemented")
+	err := u.repo.Subscribe(ctx, follower, user)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (u *UserService) Unsubscribe(ctx context.Context, follower int64, user int64) error {
-	panic("not umpemented")
+	// panic("not umpemented")
+	err := u.repo.Unsubscribe(ctx, follower, user)
+	if err != nil {
+		return err
+	}
+	return nil
 }
